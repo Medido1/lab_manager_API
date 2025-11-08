@@ -16,10 +16,11 @@ export const registerUser = async (req, res, next) => {
       data: {
         username,
         password: hashedPwd,
+        approved: false,
       },
     });
     res.status(201).json({message: "User Created", user})
   } catch (error) {
     next(error);
   }
-}
+};
