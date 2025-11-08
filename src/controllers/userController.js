@@ -1,5 +1,9 @@
 import bcrypt from "bcrypt";
-import prisma from "../../prismaClient.js";
+import prisma from "../prismaClient.js";
+import passport from "../config/passport.js";
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -24,3 +28,23 @@ export const registerUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const userLogin = async (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(401).json({message: info.message})
+    }
+    const token = jwt.sign(
+      {id: user.id},
+      JWT_SECRET,
+      {expiresIn: '1d'}
+    );
+    const {password, ...safeUser} = user;
+    return res.json({
+      message: "login successful",
+      user: safeUser,
+      token: token
+    })
+  })(req, res, next)
+}

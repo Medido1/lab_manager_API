@@ -14,3 +14,10 @@ model User {
   approved Boolean @default(false)
   isAdmin Boolean @default(false)
 }
+
+model Session {
+  id String @id
+  sid String @unique
+  data String 
+  expiresAt DateTime
+}

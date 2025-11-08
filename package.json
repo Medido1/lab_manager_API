@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --env-file=.env app.js"
+    "dev": "nodemon --env-file=.env src/app.js"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,14 @@
   "homepage": "https://github.com/Medido1/lab_manager_API#readme",
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "@quixo3/prisma-session-store": "^3.1.13",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
