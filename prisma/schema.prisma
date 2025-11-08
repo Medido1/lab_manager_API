@@ -12,7 +12,7 @@ model User {
   username String @unique
   password String
   approved Boolean @default(false)
-  isAdmin Boolean @default(false)
+  role Role @default(USER)
 }
 
 model Session {
@@ -20,4 +20,9 @@ model Session {
   sid String @unique
   data String 
   expiresAt DateTime
+}
+
+enum Role  {
+  USER
+  ADMIN
 }
