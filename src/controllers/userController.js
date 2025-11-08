@@ -65,10 +65,7 @@ export const authenticateJWT = (req, res, next) => {
 export const verifyToken = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
-      where: {AND: [
-        {id: req.user.id},
-        {approved: true}
-      ]},
+      where : {id: req.user.id},
       select: {
         id: true,
         username: true,
