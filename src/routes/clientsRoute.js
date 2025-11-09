@@ -3,21 +3,21 @@ import prisma from "../prismaClient.js";
 
 const clientsRouter = Router();
 
-clientsRouter.post('/client/add', async (req, res, next) => {
+clientsRouter.post('/add', async (req, res, next) => {
   try {
     const {
-      type, number, name, price,
-      payed, phone_number, endDate
+      type, number, fullName, price,
+      payed, phoneNumber, endDate
     } = req.body
 
     const client = await prisma.clientData.create({
       data: {
         type,
         number,
-        fullName: name,
+        fullName,
         price,
         remaining: parseInt(price - payed),
-        phoneNumber: phone_number,
+        phoneNumber,
         endDate
       }
     })
