@@ -35,6 +35,7 @@ model ClientData {
   price Decimal @db.Decimal(8, 2)
   remaining Decimal @db.Decimal(8, 2)
   phoneNumber String?
+  endDate DateTime
   createdAt DateTime @default(now())
   updatedAT DateTime @updatedAt
 }
