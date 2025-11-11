@@ -7,6 +7,7 @@ import session from 'express-session';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import prisma from './prismaClient.js';
 import cors from 'cors';
+import { authenticateJWT } from "./middleware/auth.js";
 
 dotenv.config();
 
@@ -53,7 +54,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use("/users", userRouter);
-app.use("/clients", clientsRouter);
+app.use("/clients",authenticateJWT, clientsRouter);
 
 app.listen(PORT, "0.0.0.0", (error) => {
   if (error) {
