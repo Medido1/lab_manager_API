@@ -49,20 +49,7 @@ export const userLogin = async (req, res, next) => {
   })(req, res, next)
 };
 
-// Middleware to verify the token:
-export const authenticateJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "No token provided" });
-
-  const token = authHeader.split(' ')[1];
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403);
-    req.user = decoded;
-    next();
-  })
-};
-
-export const verifyToken = async (req, res, next) => {
+export const verifyToken = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where : {id: req.user.id},
