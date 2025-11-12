@@ -31,6 +31,7 @@ model ClientData {
   id Int @id @default(autoincrement())
   type String 
   number Int 
+  sortie Boolean @default(false)
   fullName String 
   price Decimal @db.Decimal(8, 2)
   remaining Decimal @db.Decimal(8, 2)
@@ -38,4 +39,5 @@ model ClientData {
   endDate DateTime
   createdAt DateTime @default(now())
   updatedAT DateTime @updatedAt
+  file Bytes?
 }

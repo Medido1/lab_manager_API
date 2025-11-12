@@ -53,4 +53,27 @@ clientsRouter.delete('/:id/delete', async (req, res, next) => {
   }
 });
 
+clientsRouter.post('/:id/update', async (req, res, next) => {
+  const {
+    type, number, fullName, price,
+    payed, phoneNumber, endDate
+  } = req.body
+
+  const {id} = req.params;
+
+  try {
+   await prisma.clientData.update({
+      where: {id: parseInt(id, 10)},
+      data: {
+        type, number, fullName, price,
+        payed, phoneNumber, endDate
+      }
+  })
+
+  res.status(202).json({message: "client updated"});
+  } catch (error) {
+    next(error)
+  }
+});
+
 export default clientsRouter;
