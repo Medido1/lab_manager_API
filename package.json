@@ -1,0 +1,28 @@
+{
+  "name": "lab_manager_api",
+  "version": "1.0.0",
+  "description": "The backend of the lab manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "dev": "nodemon --env-file=.env src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Medido1/lab_manager_API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Medido1/lab_manager_API/issues"
+  },
+  "homepage": "https://github.com/Medido1/lab_manager_API#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
