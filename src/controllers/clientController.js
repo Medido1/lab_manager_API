@@ -1,5 +1,17 @@
 import {prisma} from "../../lib/prisma.js";
 
+export const getData = async (req, res, next) => {
+  try {
+    const type = req.params;
+    const dataTable = await prisma.clientData.findMany({
+      where: {type}
+    });
+    res.status(200).send({dataTable})
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const addClient = async (req, res, next) => {
    try {
     const {
