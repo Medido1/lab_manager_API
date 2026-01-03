@@ -68,3 +68,10 @@ export const getCurrentUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const userLogout = (req, res, next) => {
+  req.logOut(err => {
+    if (err) return next(err);
+    res.status(200).json({ message: 'Logged out successfully' });
+  });
+};
