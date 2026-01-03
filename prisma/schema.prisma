@@ -26,3 +26,19 @@ model Session {
   data String 
   expiresAt DateTime
 }
+
+model ClientData {
+  id Int @id @default(autoincrement())
+  type String 
+  number Int
+  sortie Boolean @default(false)
+  fullName String
+  price Decimal 
+  remaining Decimal
+  phoneNumber String?
+  endDate DateTime
+  file Bytes?
+  user String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
