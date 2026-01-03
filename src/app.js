@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from "dotenv";
 import usersRouter from './Routes/usersRouter.js';
+import clientsRouter from './Routes/clientsRouter.js';
+import { authenticateJWT } from './middleware/auth.js';
 import passport from './config/passport.js';
 import session from 'express-session';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
@@ -54,6 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use("/users", usersRouter);
+app.use("/clients",authenticateJWT, clientsRouter);
 
 app.listen(PORT,"0.0.0.0", (error) => {
   if (error) {
