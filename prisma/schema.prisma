@@ -33,8 +33,8 @@ model ClientData {
   number Int
   sortie Boolean @default(false)
   fullName String
-  price Decimal 
-  remaining Decimal
+  price Decimal @db.Decimal(8, 2)
+  remaining Decimal @db.Decimal(8, 2)
   phoneNumber String?
   endDate DateTime
   file Bytes?
