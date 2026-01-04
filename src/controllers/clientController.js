@@ -54,3 +54,16 @@ export const checkAsCompleted = async (req, res, next) => {
     next(error)
   }
 }
+
+export const deleteClient = async (req, res, next) => {
+  const {id} = req.params;
+
+  try {
+    await prisma.clientData.delete({
+      where: {id: parseInt(id, 10)}
+    });
+    res.status(200).json({message: 'client deleted'});
+  } catch (error) {
+    next(error);
+  }
+}
