@@ -4,9 +4,10 @@ export const getData = async (req, res, next) => {
   try {
     const {type} = req.params;
     const dataTable = await prisma.clientData.findMany({
-      where: {type}
+      where: {type},
+      orderBy: { number: 'asc' }
     });
-    res.status(200).send([dataTable])
+    res.status(200).send({dataTable})
   } catch (error) {
     next(error)
   }
@@ -34,6 +35,21 @@ export const addClient = async (req, res, next) => {
     })
 
     res.status(201).json({message: 'client created'})
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const checkAsCompleted = async (req, res, next) => {
+  const {id} = req.params;
+  const {sortie} = req.body;
+
+  try {
+    await prisma.clientData.update({
+      where: {id: parseInt(id, 10)},
+      data: {sortie}
+    })
+    res.status(200).json({ message: 'Client updated' });
   } catch (error) {
     next(error)
   }
