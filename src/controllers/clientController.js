@@ -67,3 +67,21 @@ export const deleteClient = async (req, res, next) => {
     next(error);
   }
 }
+
+export const editClient = async (req, res, next) => {
+  const {fullName, price, payed, phoneNumber} = req.body
+
+  const {id} = req.params;
+
+  try {
+    await prisma.clientData.update({
+      where: {id: parseInt(id, 10)},
+      data : {
+        fullName, price, payed, phoneNumber
+      }
+    })
+    res.status(202).json({message: "client updated"});
+  } catch (error) {
+    next(error)
+  }
+}
