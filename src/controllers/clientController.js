@@ -5,7 +5,9 @@ export const getData = async (req, res, next) => {
     const {type} = req.params;
     const dataTable = await prisma.clientData.findMany({
       where: {type},
-      orderBy: { number: 'asc' }
+      orderBy:  [
+        { createdAt: 'asc' },
+        { number: 'asc' }]
     });
     res.status(200).send({dataTable})
   } catch (error) {
