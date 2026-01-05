@@ -85,3 +85,13 @@ export const editClient = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getAllClients = async (req, res, next) => {
+  try {
+    const data = await prisma.clientData.findMany();
+    res.status(200).send(data)
+  } catch (error) {
+    next(error)
+  }
+}
+
