@@ -95,3 +95,18 @@ export const getAllClients = async (req, res, next) => {
   }
 }
 
+export const importData = async (req, res, next) => {
+  try {
+    const newData = req.body; 
+    await prisma.clientData.deleteMany({});
+
+    await prisma.clientData.createMany({
+      data: newData.map(({ id, ...rest }) => rest) // Prisma will auto-generate IDs
+    });
+
+    res.status(200).json({ message: "Data replaced successfully" });
+  } catch (error) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to replace data" });
+  }
+}
