@@ -14,17 +14,32 @@ export const getData = async (req, res, next) => {
 }
 
 export const addClient = async (req, res, next) => {
+  const currentYear = new Date().getFullYear();
    try {
     const {
-      type, number, fullName, price,
+      type,number, fullName, price,
       payedSum, phoneNumber, endDate, sortie, user
     } = req.body
+
+    // Get the max clientNumber for this type for the current year
+    const maxNumber = await prisma.clientData.aggregate({
+      _max: { number: true },
+      where: {
+        type: type, // use type from req.body
+        createdAt: {
+          gte: new Date(currentYear, 0, 1), // Jan 1
+          lte: new Date(currentYear, 11, 31, 23, 59, 59), // Dec 31
+        },
+      },
+    });
+
+    const clientNumber = (maxNumber._max.number || 0) + 1;
 
     const client = await prisma.clientData.create({
       data: {
         type,
-        number,
         fullName,
+        number: clientNumber,
         price,
         remaining: (price - payedSum).toFixed(2),
         phoneNumber,
