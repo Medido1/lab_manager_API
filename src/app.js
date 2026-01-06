@@ -8,12 +8,25 @@ import session from 'express-session';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { prisma } from '../lib/prisma.js';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 
 //load environment variables from .env file
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const httpsOptions = {
+  key: fs.readFileSync(join(__dirname, 'cert/key.pem')),  // points to src/cert/key.pem
+  cert: fs.readFileSync(join(__dirname, 'cert/cert.pem')),
+};
 
 
 const allowedOrigins = [
@@ -73,9 +86,6 @@ app.use((err, req, res, next) => {
 app.use("/users", usersRouter);
 app.use("/clients",authenticateJWT, clientsRouter);
 
-app.listen(PORT,"0.0.0.0", (error) => {
-  if (error) {
-    console.error(error)
-  }
-  console.log(`Listening on port ${PORT}`)
+https.createServer(httpsOptions, app).listen(8000, '0.0.0.0', () => {
+  console.log('HTTPS backend running on https://192.168.1.8:8000');
 });
