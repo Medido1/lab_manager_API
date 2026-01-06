@@ -15,10 +15,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+const allowedOrigins = [
+  'http://localhost:5173',          // React dev server
+  'https://mylabmanager.netlify.app/',   // Netlify deployment
+];
+
 // Allow requests from the frontend
 app.use(cors({
-  origin: 'http://localhost:5173', // React dev server
-  credentials: true, // allow cookies (needed for session)
+  origin: function(origin, callback){
+    // Allow requests with no origin (like mobile apps or Postman)
+    if(!origin) return callback(null, true);
+
+    if(allowedOrigins.includes(origin)){
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
 
 // creates persistent, signed, cookie-based sessions stored in a database via Prisma.
