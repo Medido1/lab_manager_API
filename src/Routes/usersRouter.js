@@ -9,4 +9,5 @@ usersRouter.post('/login', userLogin);
 usersRouter.get('/profile', authenticateJWT, getCurrentUser);
 usersRouter.get('/logout', userLogout);
 
+
 export default usersRouter;

@@ -1,5 +1,66 @@
 import {prisma} from "../../lib/prisma.js";
 
+const createClient = async (clientData, tx = prisma) => {
+  const currentYear = new Date().getFullYear();
+
+  const {
+    type, fullName, price,
+    payedSum, phoneNumber, endDate, sortie, user
+  } = clientData;
+
+  const maxNumber = await tx.clientData.aggregate({
+    _max: { number: true },
+    where: {
+      type,
+      createdAt: {
+        gte: new Date(currentYear, 0, 1),
+        lte: new Date(currentYear, 11, 31, 23, 59, 59),
+      },
+    },
+  });
+
+  const clientNumber = (maxNumber._max.number || 0) + 1;
+
+  return tx.clientData.create({
+    data: {
+      type,
+      fullName,
+      number: clientNumber,
+      price,
+      remaining: Number(price - payedSum),
+      phoneNumber,
+      endDate,
+      sortie,
+      user,
+    },
+  });
+};
+
+export const addClient = async (req, res, next) => {
+  try {
+    await createClient(req.body);
+    res.status(201).json({ message: 'Client created' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addMultipleClients = async (req, res, next) => {
+  const clients = req.body;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      for (const clientData of clients) {
+        await createClient(clientData, tx);
+      }
+    });
+
+    res.status(201).json({ message: 'Clients created successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getData = async (req, res, next) => {
   try {
     const {type} = req.params;
@@ -10,48 +71,6 @@ export const getData = async (req, res, next) => {
         { number: 'asc' }]
     });
     res.status(200).send({dataTable})
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const addClient = async (req, res, next) => {
-  const currentYear = new Date().getFullYear();
-   try {
-    const {
-      type,number, fullName, price,
-      payedSum, phoneNumber, endDate, sortie, user
-    } = req.body
-
-    // Get the max clientNumber for this type for the current year
-    const maxNumber = await prisma.clientData.aggregate({
-      _max: { number: true },
-      where: {
-        type: type, // use type from req.body
-        createdAt: {
-          gte: new Date(currentYear, 0, 1), // Jan 1
-          lte: new Date(currentYear, 11, 31, 23, 59, 59), // Dec 31
-        },
-      },
-    });
-
-    const clientNumber = (maxNumber._max.number || 0) + 1;
-
-    const client = await prisma.clientData.create({
-      data: {
-        type,
-        fullName,
-        number: clientNumber,
-        price,
-        remaining: (price - payedSum).toFixed(2),
-        phoneNumber,
-        endDate,
-        sortie,
-        user
-      }
-    })
-
-    res.status(201).json({message: 'client created'})
   } catch (error) {
     next(error)
   }
