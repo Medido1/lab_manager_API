@@ -24,8 +24,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const httpsOptions = {
-  key: fs.readFileSync(join(__dirname, 'cert/key.pem')),  // points to src/cert/key.pem
-  cert: fs.readFileSync(join(__dirname, 'cert/cert.pem')),
+  key: fs.readFileSync(join(__dirname, 'cert/192.168.1.11+2-key.pem')),  // points to src/cert/key.pem
+  cert: fs.readFileSync(join(__dirname, 'cert/192.168.1.11+2.pem')),
 };
 
 
