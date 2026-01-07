@@ -20,18 +20,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const httpsOptions = {
-  key: fs.readFileSync(join(__dirname, 'cert/192.168.1.11+2-key.pem')),  // points to src/cert/key.pem
-  cert: fs.readFileSync(join(__dirname, 'cert/192.168.1.11+2.pem')),
-};
-
-
 const allowedOrigins = [
   'http://localhost:5173',          // React dev server
   'https://mylabmanager.netlify.app',   // Netlify deployment
+  'https://colours-symptoms-mileage-accounting.trycloudflare.com/'
 ];
 
 // Allow requests from the frontend
@@ -86,6 +78,6 @@ app.use((err, req, res, next) => {
 app.use("/users", usersRouter);
 app.use("/clients",authenticateJWT, clientsRouter);
 
-https.createServer(httpsOptions, app).listen(8000, '0.0.0.0', () => {
+https.createServer(app).listen(8000, '0.0.0.0', () => {
   console.log('HTTPS backend running on https://192.168.1.8:8000');
 });
