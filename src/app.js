@@ -31,7 +31,7 @@ const httpsOptions = {
 
 const allowedOrigins = [
   'http://localhost:5173',          // React dev server
-  'https://mylabmanager.netlify.app/',   // Netlify deployment
+  'https://mylabmanager.netlify.app',   // Netlify deployment
 ];
 
 // Allow requests from the frontend
