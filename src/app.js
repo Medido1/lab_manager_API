@@ -4,6 +4,7 @@ import usersRouter from './Routes/usersRouter.js';
 import clientsRouter from './Routes/clientsRouter.js';
 import { authenticateJWT } from './middleware/auth.js';
 import cors from 'cors';
+import morgan from 'morgan';
 import https from 'https';
 
 //load environment variables from .env file
@@ -29,6 +30,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
+// log all requests 
+app.use(morgan('dev'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
