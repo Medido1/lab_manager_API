@@ -9,10 +9,6 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { prisma } from '../lib/prisma.js';
 import cors from 'cors';
 import https from 'https';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
 
 //load environment variables from .env file
 dotenv.config();
@@ -23,7 +19,6 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:5173',          // React dev server
   'https://mylabmanager.netlify.app',   // Netlify deployment
-  'https://colours-symptoms-mileage-accounting.trycloudflare.com/'
 ];
 
 // Allow requests from the frontend
@@ -41,15 +36,20 @@ app.use(cors({
   credentials: true,
 }));
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 // creates persistent, signed, cookie-based sessions stored in a database via Prisma.
 app.use(
   session({
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000 //ms
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true,                  // prevents JS access protects against XSS.
+      secure: isProduction,            // only over HTTPS in prod
+      sameSite: 'lax' // CSRF protection'
     },
     secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false, // Only save if session changed
+    saveUninitialized: false,  // Do not save empty sessions
     store: new PrismaSessionStore(
       prisma,
       {
@@ -78,6 +78,10 @@ app.use((err, req, res, next) => {
 app.use("/users", usersRouter);
 app.use("/clients",authenticateJWT, clientsRouter);
 
-https.createServer(app).listen(8000, '0.0.0.0', () => {
-  console.log('HTTPS backend running on https://192.168.1.8:8000');
+https.createServer(app).listen(PORT, () => {
+  console.log(`HTTP backend running on port ${PORT}`);
 });
+/* uncomment for devlopment app.listen(PORT, () => {
+  console.log(`HTTP backend running on port ${PORT}`);
+});
+ */
