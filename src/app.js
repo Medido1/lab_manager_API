@@ -36,15 +36,15 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use("/users", usersRouter);
+app.use("/clients",authenticateJWT, clientsRouter);
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message || "Internal Server Error"
   })
 });
-
-app.use("/users", usersRouter);
-app.use("/clients",authenticateJWT, clientsRouter);
 
 /* https.createServer(app).listen(PORT, () => {
   console.log(`HTTP backend running on port ${PORT}`);
