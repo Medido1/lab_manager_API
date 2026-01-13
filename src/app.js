@@ -17,19 +17,16 @@ const allowedOrigins = [
   'https://mylabmanager.netlify.app',   // Netlify deployment
 ];
 
-// Allow requests from the frontend
+//allow requests from allowedOrigins or postman
 app.use(cors({
-  origin: function(origin, callback){
-    // Allow requests with no origin (like mobile apps or Postman)
-    if(!origin) return callback(null, true);
-
-    if(allowedOrigins.includes(origin)){
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false); // blocks disallowed origins gracefully
     }
   },
-  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
 
