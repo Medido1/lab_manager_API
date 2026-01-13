@@ -3,10 +3,6 @@ import dotenv from "dotenv";
 import usersRouter from './Routes/usersRouter.js';
 import clientsRouter from './Routes/clientsRouter.js';
 import { authenticateJWT } from './middleware/auth.js';
-import passport from './config/passport.js';
-import session from 'express-session';
-import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import { prisma } from '../lib/prisma.js';
 import cors from 'cors';
 import https from 'https';
 
@@ -36,34 +32,6 @@ app.use(cors({
   credentials: true,
 }));
 
-const isProduction = process.env.NODE_ENV === 'production'
-
-// creates persistent, signed, cookie-based sessions stored in a database via Prisma.
-app.use(
-  session({
-    cookie: {
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
-      httpOnly: true,                  // prevents JS access protects against XSS.
-      secure: isProduction,            // only over HTTPS in prod
-      sameSite: 'lax' // CSRF protection'
-    },
-    secret: process.env.SECRET,
-    resave: false, // Only save if session changed
-    saveUninitialized: false,  // Do not save empty sessions
-    store: new PrismaSessionStore(
-      prisma,
-      {
-        checkPeriod: 2 * 60 *1000,
-        dbRecordIdIsSessionId: true,
-        dbRecordIdFunction: undefined
-      }
-    )
-  })
-);
-
-// Initialize Passport and enable persistent login sessions
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -78,10 +46,9 @@ app.use((err, req, res, next) => {
 app.use("/users", usersRouter);
 app.use("/clients",authenticateJWT, clientsRouter);
 
-https.createServer(app).listen(PORT, () => {
+/* https.createServer(app).listen(PORT, () => {
+  console.log(`HTTP backend running on port ${PORT}`);
+}); */
+app.listen(PORT, () => {
   console.log(`HTTP backend running on port ${PORT}`);
 });
-/* uncomment for devlopment app.listen(PORT, () => {
-  console.log(`HTTP backend running on port ${PORT}`);
-});
- */
