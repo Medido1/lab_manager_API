@@ -22,6 +22,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
+    "@prisma/language-server": "^31.3.4",
     "@quixo3/prisma-session-store": "^3.1.19",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
