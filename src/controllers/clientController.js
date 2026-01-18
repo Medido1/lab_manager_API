@@ -2,6 +2,7 @@ import {prisma} from "../../lib/prisma.js";
 
 const createClient = async (clientData, tx = prisma) => {
   const currentYear = new Date().getFullYear();
+  console.log('🔵 createClient called with:', clientData);
 
   const {
     type, fullName, price,
@@ -144,5 +145,26 @@ export const importData = async (req, res, next) => {
   } catch (error) {
     console.error(err);
     res.status(500).json({ message: "Failed to replace data" });
+  }
+}
+
+export const uploadClientFile = async (req, res, next) => {
+  try {
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const {id} = req.params;
+    const updatedClient = await prisma.clientData.update({
+       where: {id: parseInt(id, 10)},
+      data: {
+        file: file.buffer, 
+      },
+    });
+    res.status(200).json({ message: "File uploaded successfully", client: updatedClient });
+  } catch (error) {
+    next(error)
   }
 }
