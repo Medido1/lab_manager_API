@@ -2,7 +2,6 @@ import {prisma} from "../../lib/prisma.js";
 
 const createClient = async (clientData, tx = prisma) => {
   const currentYear = new Date().getFullYear();
-  console.log('🔵 createClient called with:', clientData);
 
   const {
     type, fullName, price,
@@ -166,5 +165,29 @@ export const uploadClientFile = async (req, res, next) => {
     res.status(200).json({ message: "File uploaded successfully", client: updatedClient });
   } catch (error) {
     next(error)
+  }
+}
+
+export const viewClientFile = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+
+    const clientFile = await prisma.clientData.findUnique({
+      where: {id: parseInt(id, 10)},
+      select: {
+        file: true
+      }
+    })
+
+    if (!clientFile || !clientFile.file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+     // For viewing in browser (not downloading)
+    res.setHeader('Content-Type', clientFile.fileType || 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${clientFile.fileName || 'document.pdf'}"`);
+    res.send(clientFile.file);
+  } catch (error) {
+    next(error);
   }
 }

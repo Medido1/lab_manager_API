@@ -5,7 +5,7 @@ import {
   checkAsCompleted, deleteClient, 
   editClient, getAllClients,
   importData, addMultipleClients,
-  uploadClientFile
+  uploadClientFile, viewClientFile
 } from "../controllers/clientController.js";
 
 const clientsRouter = Router();
@@ -22,6 +22,6 @@ clientsRouter.patch('/:id/update', checkAsCompleted);
 clientsRouter.delete('/:id/delete', deleteClient);
 clientsRouter.put('/:id/edit', editClient);
 clientsRouter.post('/:id/upload',upload.single('file'), uploadClientFile);
-
+clientsRouter.get('/:id/file', viewClientFile);
 
 export default clientsRouter
