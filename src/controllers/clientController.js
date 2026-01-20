@@ -142,7 +142,7 @@ export const importData = async (req, res, next) => {
 
     res.status(200).json({ message: "Data replaced successfully" });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500).json({ message: "Failed to replace data" });
   }
 }
