@@ -29,6 +29,7 @@ export const registerUser = async (req, res, next) => {
 };
 
 export const userLogin = async (req, res, next) => {
+  if (!JWT_SECRET) throw new Error("JWT_SECRET not defined in environment");
   try {
     const { username, password } = req.body;
     const user = await prisma.user.findUnique({ where: { username } });
