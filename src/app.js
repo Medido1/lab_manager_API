@@ -27,7 +27,7 @@ app.use(cors({
       callback(null, false); // blocks disallowed origins gracefully
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 }));
 
 // log all requests 
