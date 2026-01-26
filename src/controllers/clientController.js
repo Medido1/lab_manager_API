@@ -105,7 +105,7 @@ export const deleteClient = async (req, res, next) => {
 }
 
 export const editClient = async (req, res, next) => {
-  const {fullName, price, payed, phoneNumber} = req.body
+  const {fullName, price,remaining,  phoneNumber} = req.body
 
   const {id} = req.params;
 
@@ -113,7 +113,10 @@ export const editClient = async (req, res, next) => {
     await prisma.clientData.update({
       where: {id: parseInt(id, 10)},
       data : {
-        fullName, price, payed, phoneNumber
+        fullName,
+        price,
+        remaining,
+        phoneNumber
       }
     })
     res.status(202).json({message: "client updated"});
