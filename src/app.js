@@ -40,6 +40,19 @@ app.use("/users", usersRouter);
 app.use("/clients",authenticateJWT, clientsRouter);
 
 app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'File too large (max 5MB)' });
+    }
+    return res.status(400).json({ error: err.message });
+  }
+
+  if (err.message === 'UNSUPPORTED_FILE_TYPE') {
+    return res.status(415).json({ error: 'Unsupported file type' });
+  }
+  if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({ error: 'Only one file is allowed' });
+  }
   console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message || "Internal Server Error"

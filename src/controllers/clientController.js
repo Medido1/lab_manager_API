@@ -1,4 +1,6 @@
 import {prisma} from "../../lib/prisma.js";
+import libre from 'libreoffice-convert';
+import { promisify } from 'util';
 
 const createClient = async (clientData, tx = prisma) => {
   const currentYear = new Date().getFullYear();
@@ -150,6 +152,8 @@ export const importData = async (req, res, next) => {
   }
 }
 
+const convertAsync = promisify(libre.convert);
+
 export const uploadClientFile = async (req, res, next) => {
   try {
     const file = req.file;
@@ -159,12 +163,36 @@ export const uploadClientFile = async (req, res, next) => {
     }
 
     const {id} = req.params;
+    let fileBuffer = file.buffer;
+
+    // Check if file is a Word document and convert to PDF
+    const isWordFile = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/msword' // .doc
+    ].includes(file.mimetype);
+
+    if (isWordFile) {
+      try {
+        // Convert Word to PDF
+        fileBuffer = await convertAsync(fileBuffer, '.pdf', undefined);
+        if (fileBuffer.length > 5 * 1024 * 1024) {
+          return res.status(413).json({
+          error: 'Converted file exceeds size limit'
+          });
+        }
+      } catch (conversionError) {
+        console.error('Conversion error:', conversionError);
+        return res.status(500).json({ error: "Failed to convert document to PDF" });
+      }
+    }
+
     const updatedClient = await prisma.clientData.update({
        where: {id: parseInt(id, 10)},
       data: {
-        file: file.buffer, 
+        file: fileBuffer, 
       },
     });
+
     res.status(200).json({ message: "File uploaded successfully", client: updatedClient });
   } catch (error) {
     next(error)
